@@ -4,7 +4,7 @@ extension:
   id: bug
   name: "Bug Triage Workflow"
   version: "1.0.0"
-  description: "Assess, fix, and validate bug reports against the codebase with per-bug reports stored under .specify/bugs/<slug>/"
+  description: "Assess, fix, and validate bug reports against the codebase with per-bug reports stored under bugs/<slug>/"
   author: spec-kit-core
   repository: https://github.com/github/spec-kit
   license: MIT

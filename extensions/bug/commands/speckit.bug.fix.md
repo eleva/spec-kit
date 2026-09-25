@@ -4,7 +4,7 @@ description: "Apply the remediation from a bug assessment and record what was ch
 
 # Fix Bug
 
-Apply the remediation that was proposed by `__SPECKIT_COMMAND_BUG_ASSESS__` and record the changes in a fix report at `.specify/bugs/<slug>/fix.md`. This command is **only** valid after an assessment exists for the given slug.
+Apply the remediation that was proposed by `__SPECKIT_COMMAND_BUG_ASSESS__` and record the changes in a fix report at `bugs/<slug>/fix.md`. This command is **only** valid after an assessment exists for the given slug.
 
 ## User Input
 
@@ -15,7 +15,7 @@ $ARGUMENTS
 The user input should identify the bug to fix. Accept any of:
 
 - `slug=<bug-slug>` or `--slug <bug-slug>` or just a bare slug-like token.
-- A path that contains the slug (e.g. `.specify/bugs/login-timeout/`).
+- A path that contains the slug (e.g. `bugs/login-timeout/`).
 - **Nothing** — fall back to context (see below).
 
 ## Slug Resolution
@@ -23,13 +23,13 @@ The user input should identify the bug to fix. Accept any of:
 Resolve `BUG_SLUG` in this order, stopping at the first match:
 
 1. **Explicit user input** — a slug passed in `$ARGUMENTS` (any of the forms above).
-2. **Conversation context** — if the current session has just run `__SPECKIT_COMMAND_BUG_ASSESS__`, the slug it reported is the working slug. Reuse it without re-prompting. Confirm it by checking that `.specify/bugs/<slug>/assessment.md` exists; if it does not, fall through.
-3. **Single candidate on disk** — list `.specify/bugs/*/assessment.md`. If exactly one matching `assessment.md` is found, use the slug from its parent directory.
+2. **Conversation context** — if the current session has just run `__SPECKIT_COMMAND_BUG_ASSESS__`, the slug it reported is the working slug. Reuse it without re-prompting. Confirm it by checking that `bugs/<slug>/assessment.md` exists; if it does not, fall through.
+3. **Single candidate on disk** — list `bugs/*/assessment.md`. If exactly one matching `assessment.md` is found, use the slug from its parent directory.
 4. **Disambiguate**:
    - **Interactive mode**: ask the user which bug to fix and list the candidates.
    - **Automated mode**: stop with an error listing the candidates. Do not guess.
 
-Once resolved, set `BUG_SLUG` and `BUG_DIR = .specify/bugs/<BUG_SLUG>`, and briefly state in your reply which resolution path was used (explicit / from context / single candidate / asked).
+Once resolved, set `BUG_SLUG` and `BUG_DIR = bugs/<BUG_SLUG>`, and briefly state in your reply which resolution path was used (explicit / from context / single candidate / asked).
 
 ## Prerequisites
 

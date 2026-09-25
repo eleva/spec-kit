@@ -4,7 +4,7 @@ description: "Assess a bug report (pasted text or URL) against the codebase and 
 
 # Assess Bug
 
-Triage a bug report against the current codebase: understand the symptom, locate the suspected root cause, judge severity, and propose a remediation. The output is a single assessment file at `.specify/bugs/<slug>/assessment.md` that downstream commands (`__SPECKIT_COMMAND_BUG_FIX__`, `__SPECKIT_COMMAND_BUG_TEST__`) consume.
+Triage a bug report against the current codebase: understand the symptom, locate the suspected root cause, judge severity, and propose a remediation. The output is a single assessment file at `bugs/<slug>/assessment.md` that downstream commands (`__SPECKIT_COMMAND_BUG_FIX__`, `__SPECKIT_COMMAND_BUG_TEST__`) consume.
 
 ## User Input
 
@@ -22,7 +22,7 @@ If both a URL and text are present, fetch the URL and merge its content with the
 
 ## Slug Resolution
 
-Each bug gets its own directory under `.specify/bugs/<slug>/`. The slug always follows the format `YYYYMMDDHHMMSS_<name>`, where the timestamp is the current local date-time (e.g. `20260925165100`) and `<name>` is a short descriptive identifier. Resolve the `<name>` part in this order:
+Each bug gets its own directory under `bugs/<slug>/`. The slug always follows the format `YYYYMMDDHHMMSS_<name>`, where the timestamp is the current local date-time (e.g. `20260925165100`) and `<name>` is a short descriptive identifier. Resolve the `<name>` part in this order:
 
 1. **User-provided name**: If the user explicitly passes a name (e.g., `slug=login-timeout`, `--slug login-timeout`, or just an obvious slug-like token), use it verbatim after normalization (lowercase, hyphen-separated, no spaces, no special characters other than `-` and digits).
 2. **Interactive mode** (a human is driving): If no name was provided, **ask the user** for one and wait for the answer before continuing. Suggest a 2–4 word kebab-case candidate derived from the bug summary as a default.
@@ -30,11 +30,11 @@ Each bug gets its own directory under `.specify/bugs/<slug>/`. The slug always f
 
 Compose the final slug as `<TIMESTAMP>_<name>` (e.g. `20260925165100_login-timeout`). The timestamp prefix guarantees uniqueness — do not append further suffixes unless two slugs resolve to the same second, in which case append `-2`, `-3`, etc. Never overwrite an existing bug directory.
 
-After resolution, set `BUG_SLUG` and `BUG_DIR = .specify/bugs/<BUG_SLUG>`.
+After resolution, set `BUG_SLUG` and `BUG_DIR = bugs/<BUG_SLUG>`.
 
 ## Prerequisites
 
-- Ensure the directory `.specify/bugs/<BUG_SLUG>/` (i.e., `BUG_DIR`) exists, creating it (including any missing parents) if necessary. Use whatever mechanism is appropriate for the current environment.
+- Ensure the directory `bugs/<BUG_SLUG>/` (i.e., `BUG_DIR`) exists, creating it (including any missing parents) if necessary. Use whatever mechanism is appropriate for the current environment.
 - If `BUG_DIR/assessment.md` already exists, ask the user whether to overwrite it before continuing (in interactive mode); in automated mode, refuse and pick a new unique slug instead.
 
 ## Safety When Fetching URLs
@@ -163,13 +163,13 @@ Do not attempt to validate the URL by issuing a preflight `HEAD` (or any other) 
 
 7. **Report back** with:
    - The slug used and whether it was user-provided, asked-for, or auto-generated. State it on its own line (e.g. `Slug: <BUG_SLUG>`) so it is easy to spot — downstream commands in the same session may reuse it from context without re-prompting.
-   - The path `.specify/bugs/<BUG_SLUG>/assessment.md`.
+   - The path `bugs/<BUG_SLUG>/assessment.md`.
    - The verdict and severity.
    - The next suggested step: `__SPECKIT_COMMAND_BUG_FIX__ slug=<BUG_SLUG>`.
 
 ## Guardrails
 
-- Never modify source files during assessment — this command only reads and writes inside `.specify/bugs/<slug>/`.
+- Never modify source files during assessment — this command only reads and writes inside `bugs/<slug>/`.
 - Never invent reproduction steps or file paths that are not supported by either the report or the codebase.
 - Never overwrite an existing `assessment.md` without confirmation.
 - If the bug report cannot be understood at all (empty, unrelated, spam), set verdict to `invalid` with a clear reason and stop.

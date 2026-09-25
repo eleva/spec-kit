@@ -4,7 +4,7 @@ description: "Validate that a previously fixed bug is resolved and record the ve
 
 # Test Bug Fix
 
-Validate that the fix recorded by `__SPECKIT_COMMAND_BUG_FIX__` actually resolves the bug described by `__SPECKIT_COMMAND_BUG_ASSESS__`. The output is a verification report at `.specify/bugs/<slug>/test.md`.
+Validate that the fix recorded by `__SPECKIT_COMMAND_BUG_FIX__` actually resolves the bug described by `__SPECKIT_COMMAND_BUG_ASSESS__`. The output is a verification report at `bugs/<slug>/test.md`.
 
 ## User Input
 
@@ -15,7 +15,7 @@ $ARGUMENTS
 The user input should identify the bug to validate. Accept any of:
 
 - `slug=<bug-slug>` or `--slug <bug-slug>` or a bare slug-like token.
-- A path that contains the slug (e.g. `.specify/bugs/login-timeout/`).
+- A path that contains the slug (e.g. `bugs/login-timeout/`).
 - **Nothing** — fall back to context (see below).
 
 ## Slug Resolution
@@ -23,13 +23,13 @@ The user input should identify the bug to validate. Accept any of:
 Resolve `BUG_SLUG` in this order, stopping at the first match:
 
 1. **Explicit user input** — a slug passed in `$ARGUMENTS` (any of the forms above).
-2. **Conversation context** — if the current session has just run `__SPECKIT_COMMAND_BUG_ASSESS__` or `__SPECKIT_COMMAND_BUG_FIX__`, the slug it reported is the working slug. Reuse it without re-prompting. Confirm it by checking that `.specify/bugs/<slug>/fix.md` exists; if it does not, fall through.
-3. **Single candidate on disk** — list `.specify/bugs/*/fix.md`. If exactly one bug has a `fix.md`, use it.
+2. **Conversation context** — if the current session has just run `__SPECKIT_COMMAND_BUG_ASSESS__` or `__SPECKIT_COMMAND_BUG_FIX__`, the slug it reported is the working slug. Reuse it without re-prompting. Confirm it by checking that `bugs/<slug>/fix.md` exists; if it does not, fall through.
+3. **Single candidate on disk** — list `bugs/*/fix.md`. If exactly one bug has a `fix.md`, use it.
 4. **Disambiguate**:
    - **Interactive mode**: ask the user which bug to validate and list the candidates.
    - **Automated mode**: stop with an error listing the candidates. Do not guess.
 
-Once resolved, set `BUG_SLUG` and `BUG_DIR = .specify/bugs/<BUG_SLUG>`, and briefly state in your reply which resolution path was used (explicit / from context / single candidate / asked).
+Once resolved, set `BUG_SLUG` and `BUG_DIR = bugs/<BUG_SLUG>`, and briefly state in your reply which resolution path was used (explicit / from context / single candidate / asked).
 
 ## Prerequisites
 
@@ -112,6 +112,6 @@ Once resolved, set `BUG_SLUG` and `BUG_DIR = .specify/bugs/<BUG_SLUG>`, and brie
 
 ## Guardrails
 
-- This command MUST NOT modify source code. It only runs checks and writes inside `.specify/bugs/<slug>/`.
+- This command MUST NOT modify source code. It only runs checks and writes inside `bugs/<slug>/`.
 - Never overwrite an existing `test.md` without confirmation.
 - Never mark a fix as `verified` based on tests alone if the original assessment listed a reproduction that you did not actually exercise — downgrade to `partial` and say so.
