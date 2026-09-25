@@ -22,11 +22,13 @@ If both a URL and text are present, fetch the URL and merge its content with the
 
 ## Slug Resolution
 
-Each bug gets its own directory under `.specify/bugs/<slug>/`. Resolve the slug in this order:
+Each bug gets its own directory under `.specify/bugs/<slug>/`. The slug always follows the format `YYYYMMDDHHMMSS_<name>`, where the timestamp is the current local date-time (e.g. `20260925165100`) and `<name>` is a short descriptive identifier. Resolve the `<name>` part in this order:
 
-1. **User-provided slug**: If the user explicitly passes a slug (e.g., `slug=login-timeout`, `--slug login-timeout`, or just an obvious slug-like token), use it verbatim after normalization (lowercase, hyphen-separated, no spaces, no special characters other than `-` and digits). Preserve the shape the user asked for — do not append timestamps or numbers.
-2. **Interactive mode** (a human is driving): If no slug was provided, **ask the user** for one and wait for the answer before continuing. Suggest a 2–4 word kebab-case candidate derived from the bug summary as a default.
-3. **Automated / non-interactive mode** (no human to ask): Generate a concise slug yourself from the bug summary (2–4 kebab-case words, e.g. `login-timeout-500`). The generated slug **MUST** produce a unique directory — if `.specify/bugs/<slug>/` already exists, append the shortest disambiguating suffix needed (`-2`, `-3`, …) or a short ISO-style date (`-20260605`) to make it unique. Never overwrite an existing bug directory.
+1. **User-provided name**: If the user explicitly passes a name (e.g., `slug=login-timeout`, `--slug login-timeout`, or just an obvious slug-like token), use it verbatim after normalization (lowercase, hyphen-separated, no spaces, no special characters other than `-` and digits).
+2. **Interactive mode** (a human is driving): If no name was provided, **ask the user** for one and wait for the answer before continuing. Suggest a 2–4 word kebab-case candidate derived from the bug summary as a default.
+3. **Automated / non-interactive mode** (no human to ask): Generate a concise name from the bug summary (2–4 kebab-case words, e.g. `login-timeout-500`).
+
+Compose the final slug as `<TIMESTAMP>_<name>` (e.g. `20260925165100_login-timeout`). The timestamp prefix guarantees uniqueness — do not append further suffixes unless two slugs resolve to the same second, in which case append `-2`, `-3`, etc. Never overwrite an existing bug directory.
 
 After resolution, set `BUG_SLUG` and `BUG_DIR = .specify/bugs/<BUG_SLUG>`.
 
